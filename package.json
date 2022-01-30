@@ -1,0 +1,25 @@
+{
+  "name": "best-wordle-word",
+  "version": "1.0.0",
+  "description": "Finds the best wordle starting words based on a configurable scoring",
+  "main": "bestStartingWord.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/strenkml/best-wordle-word.git"
+  },
+  "keywords": [
+    "wordle"
+  ],
+  "author": "Matt Strenk",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/strenkml/best-wordle-word/issues"
+  },
+  "homepage": "https://github.com/strenkml/best-wordle-word#readme",
+  "dependencies": {
+    "fs": "^0.0.1-security"
+  }
+}
