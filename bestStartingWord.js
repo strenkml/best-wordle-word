@@ -8,21 +8,47 @@ const fs = require("fs");
 /*                             Constant Variables                             */
 /* -------------------------------------------------------------------------- */
 // Scoring Config
-const vowelPoints = 10;
+const vowelPoints = 15;
 const consPoints = 0;
 const doubleLetterPoints = -500;
-const mostUsedLetterPoints = 26;
-const mostUsedLetterMultiplier = 1;
+const totalMostUsedLetterPoints = 250;
 const solveWordPoints = 0;
 
 // Filenames
-const mostCommonLetterFileName = "mostUsedLetters.txt";
 const acceptedWordsFileName = "acceptedWords.txt";
 const solveWordsFileName = "solveWords.txt";
 const outputFileName = "output.txt";
 
 // List of vowels
 const vowels = ["a", "e", "i", "o", "u", "y"];
+const alphabet = [
+  "a",
+  "b",
+  "c",
+  "d",
+  "e",
+  "f",
+  "g",
+  "h",
+  "i",
+  "j",
+  "k",
+  "l",
+  "m",
+  "n",
+  "o",
+  "p",
+  "q",
+  "r",
+  "s",
+  "t",
+  "u",
+  "v",
+  "w",
+  "x",
+  "y",
+  "z",
+];
 
 /* -------------------------------------------------------------------------- */
 /*                                  Variables                                 */
@@ -37,6 +63,8 @@ var wordObj = {
 
 var uniquePoints = [];
 
+var totalLettersInSolutions = 0;
+
 /* -------------------------------------------------------------------------- */
 /*                                  Functions                                 */
 /* -------------------------------------------------------------------------- */
@@ -50,15 +78,38 @@ function addUniquePoints(points) {
   }
 }
 
+function setupLettersArray() {
+  alphabet.forEach((letter) => {
+    letters.push({ letter: letter, count: 0, percent: 0 });
+  });
+}
+
+function getLetterUsage(input) {
+  input.forEach((word) => {
+    for (var i = 0; i < word.length; i++) {
+      let letter = word.charAt(i).toLowerCase();
+      let index = letters.findIndex((element) => element.letter == letter);
+
+      letters[index].count++;
+      totalLettersInSolutions++;
+    }
+  });
+  letters.sort((a, b) => b.count - a.count);
+  letters.forEach((l, index) => {
+    letters[index].percent = l.count / totalLettersInSolutions;
+  });
+}
+
 /* -------------------------------------------------------------------------- */
 /*                                  Main Code                                 */
 /* -------------------------------------------------------------------------- */
-// Read in the most used letters
-console.log("Creating letter list");
-var letters = fs.readFileSync(mostCommonLetterFileName, "utf-8").split("\n");
 
 // Read in all of the possible solve words
 var solveWords = fs.readFileSync(solveWordsFileName, "utf-8").split("\n");
+
+console.log("Creating letter list");
+setupLettersArray();
+getLetterUsage(solveWords);
 
 // Read in all possible words and calculate points per word
 console.log("Calculating word scores");
@@ -77,10 +128,8 @@ allWords.forEach((word) => {
 
   for (var i = 0; i < word.length; i++) {
     var letter = word.charAt(i).toLowerCase();
-    let index = letters.findIndex((element) => element == letter);
-    points +=
-      mostUsedLetterPoints * mostUsedLetterMultiplier -
-      index * mostUsedLetterMultiplier;
+    let index = letters.findIndex((element) => element.letter == letter);
+    points += Math.round(letters[index].percent * totalMostUsedLetterPoints);
 
     if (vowels.includes(letter)) {
       points += vowelPoints;
